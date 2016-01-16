@@ -35,7 +35,7 @@
 #include "CCx.h"
 #include "CCxCfg.h"
 #include "Buffer.h"
-#include "DHT.h"
+//#include "DHT.h"
 //#include <sleep_bod_disable.h>
 #include <avr/sleep.h>
 #include <avr/power.h>
@@ -51,6 +51,12 @@
 
 #define DHTPIN 4     // Use PD4 for Temp Sensor
 #define BTNPIN 8     // Use PB0/PCINT0 for bind button
+
+#define DHT11 11
+#define DHT22 22
+#define DHT21 21
+#define AM2301 21
+#define MAXTIMINGS 1000
 
 // Uncomment whatever type you're using!
 //#define DHTTYPE DHT11   // DHT 11 
@@ -500,6 +506,13 @@ void sendPacket() {
 
 // Setup
 void setup() {
+  //from http://forum.arduino.cc/index.php?topic=54623.0
+  //an ideal freq of 8.294400 is required for 0% error @ 115200
+  //this will cause time delays to be off by a factor of approx 0.964 per sec
+  //if OSCCAL is factory calibrated to 8MHz then just adjust by the ratio 
+  //... not exactly guaranteed of course!
+  //OSCCAL=(double)OSCCAL*1.0368;
+  OSCCAL=((uint32_t)OSCCAL*10368+5000)/10000;//Use integer maths here as makes smaller code than fp above
   delay(200); //probably not a bad idea to wait until power etc. have stabilised a little
 
   // Power up and configure the CC1101
